@@ -1,0 +1,35 @@
+{
+  "name": "express-ts-starter",
+  "version": "1.0.0",
+  "description": "Express StarterKits With TypeScript",
+  "homepage": "https://github.com/SinuxDev/Express-StarterKit#readme",
+  "bugs": {
+    "url": "https://github.com/SinuxDev/Express-StarterKit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SinuxDev/Express-StarterKit.git"
+  },
+  "license": "ISC",
+  "author": "Sinux",
+  "type": "commonjs",
+  "main": "server.ts",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "keywords": [],
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mongoose": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/mongoose": "^5.11.96",
+    "@types/node": "^24.10.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
+  }
+}
