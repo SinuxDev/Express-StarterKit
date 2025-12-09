@@ -27,6 +27,7 @@ This starter kit provides a solid foundation for building scalable Node.js REST 
 
 ## 📁 Project Structure
 
+```
 express-ts-starter/
 ├── src/
 │ ├── app/
@@ -50,6 +51,10 @@ express-ts-starter/
 ├── .env # Environment variables
 ├── package.json
 └── tsconfig.json
+
+```
+
+```
 
 ## 🏗️ Architecture
 
@@ -148,6 +153,8 @@ npm start
 
 ### TypeScript Config
 
+```
+
 {
 "compilerOptions": {
 "target": "ES2020",
@@ -161,6 +168,10 @@ npm start
 }
 }
 
+```
+
+```
+
 ---
 
 ## 📝 Adding a New Module
@@ -168,6 +179,8 @@ npm start
 To add a new feature (e.g., `User`), follow this pattern:
 
 ### 1. Create Model (`src/app/models/User.ts`)
+
+```
 
 import { Schema, model } from "mongoose";
 
@@ -183,7 +196,13 @@ email: { type: String, required: true, unique: true },
 
 export const UserModel = model<IUser>("User", userSchema);
 
+```
+
+```
+
 ### 2. Create Repository (`src/app/repositories/UserRepository.ts`)
+
+```
 
 import { BaseRepository } from "./BaseRepository";
 import { IUser, UserModel } from "../models/User";
@@ -198,7 +217,13 @@ return this.findOne({ email });
 }
 }
 
+```
+
+```
+
 ### 3. Create Service (`src/app/services/UserService.ts`)
+
+```
 
 import { BaseService } from "./BaseService";
 import { IUser } from "../models/User";
@@ -218,7 +243,11 @@ return this.create({ name, email });
 }
 }
 
+```
+
 ### 4. Create Controller (`src/app/controllers/UserController.ts`)
+
+```
 
 import { Request, Response } from "express";
 import { BaseController } from "./BaseController";
@@ -239,7 +268,13 @@ return this.created(res, user);
 });
 }
 
+```
+
+```
+
 ### 5. Register Routes (`src/start/routes.ts`)
+
+```
 
 import { Router } from "express";
 import { UserController } from "../app/controllers/UserController";
@@ -251,8 +286,13 @@ router.post("/users", userController.create);
 
 export default router;
 
+```
+
+```
+
 ## 🔒 Error Handling
 
+```
 Custom exceptions are handled globally:
 // Throw from anywhere
 throw new AppException("User not found", 404);
@@ -262,6 +302,10 @@ throw new AppException("User not found", 404);
 "success": false,
 "message": "User not found"
 }
+
+```
+
+```
 
 ---
 
@@ -297,3 +341,5 @@ MIT
 ## 🤝 Contributing
 
 Feel free to fork and extend this starter kit for your needs!
+
+```
