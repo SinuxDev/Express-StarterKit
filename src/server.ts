@@ -7,7 +7,7 @@ async function bootstrap() {
     await Database.getInstance().connect();
 
     app.listen(env.port, () => {
-      console.info(`🚀 Server running on http://localhost:${env.port}`);
+      console.info(`🚀 Server running on http://localhost:${env.port}/api`);
       console.info(`📡 Environment: ${env.nodeEnv}`);
     });
   } catch (error) {

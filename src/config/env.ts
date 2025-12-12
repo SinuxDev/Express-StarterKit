@@ -1,13 +1,24 @@
 import dotenv from "dotenv";
+import path from "path";
 
-dotenv.config();
+const envFile =
+  process.env.NODE_ENV === "production" ? ".env.production" : ".env";
+
+dotenv.config({ path: path.resolve(process.cwd(), envFile) });
 
 export const env = {
-  port: process.env.PORT ? Number(process.env.PORT) : 3000,
-  mongoUri: process.env.MONGO_URI ?? "",
-  nodeEnv: process.env.NODE_ENV ?? "development",
+  port: Number(process.env.PORT) || 3000,
+  mongoUri: process.env.MONGO_URI!,
+  nodeEnv: process.env.NODE_ENV || "development",
+  jwtSecret: process.env.JWT_SECRET!,
+  jwtExpiry: process.env.JWT_EXPIRY || "7d",
+  isProduction: process.env.NODE_ENV === "production",
+  isDevelopment: process.env.NODE_ENV === "development",
 };
 
-if (!env.mongoUri) {
-  throw new Error("MONGO_URI is required in .env");
+const requiredEnvVars = ["MONGO_URI", "JWT_SECRET"];
+const missingEnvVars = requiredEnvVars.filter((key) => !process.env[key]);
+
+if (missingEnvVars.length > 0) {
+  throw new Error(`Missing required env vars: ${missingEnvVars.join(", ")}`);
 }

@@ -1,8 +1,16 @@
 import express, { Request, Response, NextFunction } from "express";
+import morgan from "morgan";
 import routes from "./start/routes";
 import { AppException } from "./app/exceptions/AppException";
+import { env } from "./config/env";
 
 const app = express();
+
+if (env.isDevelopment) {
+  app.use(morgan("dev"));
+} else {
+  app.use(morgan("combined"));
+}
 
 // Middlewares
 app.use(express.json());
