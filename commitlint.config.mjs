@@ -16,6 +16,7 @@ export default {
         "build", // Build system changes
         "ci", // CI config changes
         "revert", // Revert a previous commit
+        "update",
       ],
     ],
   },
