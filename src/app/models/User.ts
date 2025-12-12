@@ -1,13 +1,21 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Document } from "mongoose";
+import bcrypt from "bcrypt";
 
 export interface IUser {
   name: string;
   email: string;
+  password: string;
+  role: "admin" | "user";
+  isActive: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-const userSchema = new Schema<IUser>(
+export interface IUserDocument extends IUser, Document {
+  comparePassword(candidatePassword: string): Promise<boolean>;
+}
+
+const userSchema = new Schema<IUserDocument>(
   {
     name: {
       type: String,
@@ -22,18 +30,40 @@ const userSchema = new Schema<IUser>(
       unique: true,
       lowercase: true,
       trim: true,
-      match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
+      match: [/^\S+@\S+\.\S+$/, "Please provide a valid email"],
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters"],
+      select: false,
+    },
+    role: {
+      type: String,
+      enum: ["admin", "user"],
+      default: "user",
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   {
     timestamps: true,
-    versionKey: false,
   }
 );
 
-// Compound indexes
-userSchema.index({ email: 1 }, { unique: true });
-userSchema.index({ name: 1 });
-userSchema.index({ createdAt: -1 });
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
 
-export const UserModel = model<IUser>("User", userSchema);
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+userSchema.methods.comparePassword = async function (
+  candidatePassword: string
+): Promise<boolean> {
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
+export const UserModel = model<IUserDocument>("User", userSchema);

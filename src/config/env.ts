@@ -20,15 +20,12 @@ const requiredEnvVars = ["MONGO_URI", "JWT_SECRET"];
 const missingEnvVars = requiredEnvVars.filter((key) => !process.env[key]);
 
 if (missingEnvVars.length > 0) {
+  console.error(`Missing required env vars: ${missingEnvVars.join(", ")}`);
   throw new Error(`Missing required env vars: ${missingEnvVars.join(", ")}`);
-}
-
-if (!env.mongoUri) {
-  throw new Error("MONGO_URI is required in .env");
 }
 
 if (!env.jwtSecret || env.jwtSecret === "change-me-in-production") {
   console.warn(
-    "⚠️  Warning: Using default JWT_SECRET. Set a secure secret in production!"
+    "⚠️  Using default JWT_SECRET. Set a secure secret in production!"
   );
 }
