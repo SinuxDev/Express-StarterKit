@@ -1,12 +1,25 @@
 import express, { Request, Response, NextFunction } from "express";
+import helmet from "helmet";
+import cors from "cors";
+import mongoSanitize from "express-mongo-sanitize";
+import hpp from "hpp";
 import morgan from "morgan";
 import routes from "./start/routes";
 import { AppException } from "./app/exceptions/AppException";
 import { env } from "./config/env";
 import logger from "./config/logger";
 import { apiLimiter } from "./app/middlewares/rate-limit.middleware";
+import {
+  corsOptions,
+  securityHeaders,
+} from "./app/middlewares/security.middleware";
 
 const app = express();
+
+// Security middleware
+app.use(helmet());
+app.use(cors(corsOptions));
+app.use(securityHeaders);
 
 if (env.isDevelopment) {
   app.use(morgan("dev"));
@@ -14,15 +27,23 @@ if (env.isDevelopment) {
   app.use(morgan("combined"));
 }
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Body parsing with size limits
+app.use(express.json({ limit: "10kb" }));
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
+// Data sanitization
+app.use(mongoSanitize());
+app.use(hpp());
+
+// Health check
 app.get("/health", (_req: Request, res: Response) => {
   res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+// Rate limiting
 app.use("/api", apiLimiter);
 
+// Routes
 app.use("/api", routes);
 
 app.use((req: Request, _res: Response, next: NextFunction) => {
